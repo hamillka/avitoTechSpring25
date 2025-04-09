@@ -1,0 +1,23 @@
+# Binary files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test files
+*.test
+*.out
+
+# Dependencies
+vendor/
+
+# IDE
+.idea/
+.vscode/
+
+# Build
+bin/
+build/
+
+# macOS
+.DS_Store
