@@ -4,12 +4,12 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
 )
 
 func TestAddProductToReception_Success(t *testing.T) {

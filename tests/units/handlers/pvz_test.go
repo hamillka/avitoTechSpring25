@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
@@ -18,7 +19,6 @@ import (
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/mocks"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
 	"go.uber.org/zap/zaptest"
 )
 

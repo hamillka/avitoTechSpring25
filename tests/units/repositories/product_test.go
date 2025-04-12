@@ -96,32 +96,35 @@ func TestDeleteProduct_Error(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestGetProductsByReceptionId_Success(t *testing.T) {
+func TestGetProductsByReceptionIds_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
 	repo := repositories.NewProductRepository(sqlxDB)
 
 	time := time.Now()
-	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM products WHERE reception_id = $1 AND date_time BETWEEN $2 AND $3")).
-		WithArgs("rec1", sqlmock.AnyArg(), sqlmock.AnyArg()).
+	mock.ExpectQuery(regexp.QuoteMeta("SELECT id, date_time, product_type, reception_id FROM products WHERE reception_id = ANY($1) AND date_time BETWEEN $2 AND $3")).
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), sqlmock.AnyArg()).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "date_time", "product_type", "reception_id"}).
-			AddRow("prod1", time, "обувь", "rec1"))
+			AddRow("prod1", time, "обувь", "rec1").
+			AddRow("prod2", time, "одежда", "rec2"))
 
-	products, err := repo.GetProductsByReceptionId("rec1", nil, nil)
+	products, err := repo.GetProductsByReceptionIds([]string{"rec1", "rec2"}, nil, nil)
 	assert.NoError(t, err)
-	assert.Len(t, products, 1)
+	assert.Len(t, products, 2)
+	assert.Equal(t, "prod1", products[0].Id)
+	assert.Equal(t, "prod2", products[1].Id)
 }
 
-func TestGetProductsByReceptionId_ErrorInQuery(t *testing.T) {
+func TestGetProductsByReceptionIds_ErrorInQuery(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
 	repo := repositories.NewProductRepository(sqlxDB)
 
-	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM products WHERE reception_id = $1 AND date_time BETWEEN $2 AND $3")).
-		WithArgs("rec1", sqlmock.AnyArg(), sqlmock.AnyArg()).
+	mock.ExpectQuery(regexp.QuoteMeta("SELECT id, date_time, product_type, reception_id FROM products WHERE reception_id = ANY($1) AND date_time BETWEEN $2 AND $3")).
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), sqlmock.AnyArg()).
 		WillReturnError(sql.ErrConnDone)
 
-	products, err := repo.GetProductsByReceptionId("rec1", nil, nil)
+	products, err := repo.GetProductsByReceptionIds([]string{"rec1", "rec2"}, nil, nil)
 	assert.NoError(t, err)
 	assert.Len(t, products, 0)
 }

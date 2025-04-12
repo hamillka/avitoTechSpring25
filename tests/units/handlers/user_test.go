@@ -8,12 +8,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/mocks"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
 	"go.uber.org/zap/zaptest"
 )
 

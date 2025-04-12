@@ -103,24 +103,26 @@ func TestReceptionRepository_UpdateReceptionStatus_Error(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestReceptionRepository_GetReceptionsByPVZId_NoFilter(t *testing.T) {
+func TestReceptionRepository_GetReceptionsByPVZIds_NoFilter(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
 	repo := repositories.NewReceptionRepository(sqlxDB)
 	timeNow := time.Now()
 
-	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, date_time, pvz_id, status FROM receptions WHERE pvz_id = $1`)).
-		WithArgs("pvz123").
+	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, date_time, pvz_id, status FROM receptions WHERE pvz_id = ANY($1)`)).
+		WithArgs(sqlmock.AnyArg()).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "date_time", "pvz_id", "status"}).
-			AddRow("r1", timeNow, "pvz123", "in_progress"))
+			AddRow("r1", timeNow, "pvz123", "in_progress").
+			AddRow("r2", timeNow, "pvz456", "in_progress"))
 
-	rs, err := repo.GetReceptionsByPVZId("pvz123", nil, nil)
+	rs, err := repo.GetReceptionsByPVZIds([]string{"pvz123", "pvz456"}, nil, nil)
 	assert.NoError(t, err)
-	assert.Len(t, rs, 1)
+	assert.Len(t, rs, 2)
 	assert.Equal(t, "r1", rs[0].Id)
+	assert.Equal(t, "r2", rs[1].Id)
 }
 
-func TestReceptionRepository_GetReceptionsByPVZId_WithFilter(t *testing.T) {
+func TestReceptionRepository_GetReceptionsByPVZIds_WithFilter(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
 	repo := repositories.NewReceptionRepository(sqlxDB)
@@ -130,25 +132,27 @@ func TestReceptionRepository_GetReceptionsByPVZId_WithFilter(t *testing.T) {
 	mock.ExpectQuery(regexp.QuoteMeta(`
 	SELECT r.id, r.date_time, r.pvz_id, r.status 
 	FROM receptions r
-	WHERE r.pvz_id = $1 
+	WHERE r.pvz_id = ANY($1) 
 	AND EXISTS (
 		SELECT 1 FROM products p 
 		WHERE p.reception_id = r.id 
 		AND p.date_time BETWEEN $2 AND $3
 	)
 `)).
-		WithArgs("pvz123", start, end).
+		WithArgs(sqlmock.AnyArg(), start, end).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "date_time", "pvz_id", "status"}).
-			AddRow("r1", start, "pvz123", "close"))
+			AddRow("r1", start, "pvz123", "close").
+			AddRow("r2", start, "pvz456", "close"))
 
-	rs, err := repo.GetReceptionsByPVZId("pvz123", &start, &end)
+	rs, err := repo.GetReceptionsByPVZIds([]string{"pvz123", "pvz456"}, &start, &end)
 	assert.NoError(t, err)
-	assert.Len(t, rs, 1)
+	assert.Len(t, rs, 2)
 	assert.Equal(t, "r1", rs[0].Id)
+	assert.Equal(t, "r2", rs[1].Id)
 	assert.Equal(t, "close", rs[0].Status)
 }
 
-func TestReceptionRepository_GetReceptionsByPVZId_QueryError(t *testing.T) {
+func TestReceptionRepository_GetReceptionsByPVZIds_QueryError(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
 	repo := repositories.NewReceptionRepository(sqlxDB)
@@ -158,16 +162,16 @@ func TestReceptionRepository_GetReceptionsByPVZId_QueryError(t *testing.T) {
 	mock.ExpectQuery(regexp.QuoteMeta(`
 	SELECT r.id, r.date_time, r.pvz_id, r.status 
 	FROM receptions r
-	WHERE r.pvz_id = $1 
+	WHERE r.pvz_id = ANY($1) 
 	AND EXISTS (
 		SELECT 1 FROM products p 
 		WHERE p.reception_id = r.id 
 		AND p.date_time BETWEEN $2 AND $3
 	)
 `)).
-		WithArgs("pvz123", start, end).
+		WithArgs(sqlmock.AnyArg(), start, end).
 		WillReturnError(sql.ErrConnDone)
 
-	_, err := repo.GetReceptionsByPVZId("pvz123", &start, &end)
+	_, err := repo.GetReceptionsByPVZIds([]string{"pvz123", "pvz456"}, &start, &end)
 	assert.Error(t, err)
 }
