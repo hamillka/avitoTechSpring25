@@ -12,7 +12,7 @@ type ProductRepository interface {
 	AddProduct(productType, receptionId string) (models.Product, error)
 	GetLastProduct(recId string) (models.Product, error)
 	DeleteProduct(prodId string) error
-	GetProductsByReceptionId(recId string, startDate, endDate *time.Time) ([]models.Product, error)
+	GetProductsByReceptionIds(recIds []string, startDate, endDate *time.Time) ([]models.Product, error)
 }
 
 type ProductService struct {

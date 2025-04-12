@@ -7,6 +7,7 @@ import (
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 )
 
 type ReceptionRepository struct {
@@ -14,19 +15,23 @@ type ReceptionRepository struct {
 }
 
 const (
-	getLastReception             = "SELECT id, date_time, pvz_id, status FROM receptions WHERE pvz_id = $1 ORDER BY date_time DESC LIMIT 1"
-	createReception              = "INSERT INTO receptions (pvz_id) VALUES ($1) RETURNING id, date_time, pvz_id, status"
-	updateReceptionStatus        = "UPDATE receptions SET status = $1 WHERE id = $2 RETURNING id, date_time, pvz_id, status"
-	getReceptionsByPVZIdNoFilter = "SELECT id, date_time, pvz_id, status FROM receptions WHERE pvz_id = $1"
-	getReceptionsByPVZIdFiltered = `
+	getLastReception              = "SELECT id, date_time, pvz_id, status FROM receptions WHERE pvz_id = $1 ORDER BY date_time DESC LIMIT 1"
+	createReception               = "INSERT INTO receptions (pvz_id) VALUES ($1) RETURNING id, date_time, pvz_id, status"
+	updateReceptionStatus         = "UPDATE receptions SET status = $1 WHERE id = $2 RETURNING id, date_time, pvz_id, status"
+	getReceptionsByPVZIdsFiltered = `
 	SELECT r.id, r.date_time, r.pvz_id, r.status 
 	FROM receptions r
-	WHERE r.pvz_id = $1 
+	WHERE r.pvz_id = ANY($1) 
 	AND EXISTS (
 		SELECT 1 FROM products p 
 		WHERE p.reception_id = r.id 
 		AND p.date_time BETWEEN $2 AND $3
 	)
+`
+	getReceptionsByPVZIds = `
+	SELECT id, date_time, pvz_id, status 
+	FROM receptions 
+	WHERE pvz_id = ANY($1)
 `
 )
 
@@ -88,12 +93,12 @@ func (rr *ReceptionRepository) UpdateReceptionStatus(recId, status string) (mode
 	return reception, nil
 }
 
-func (rr *ReceptionRepository) GetReceptionsByPVZId(pvzId string, startDate, endDate *time.Time) ([]models.Reception, error) {
+func (rr *ReceptionRepository) GetReceptionsByPVZIds(pvzIds []string, startDate, endDate *time.Time) ([]models.Reception, error) {
 	var rows *sql.Rows
 	var err error
 
 	if startDate == nil && endDate == nil {
-		rows, err = rr.db.Query(getReceptionsByPVZIdNoFilter, pvzId)
+		rows, err = rr.db.Query(getReceptionsByPVZIds, pq.Array(pvzIds))
 	} else {
 		start := time.Time{}
 		end := time.Now()
@@ -106,7 +111,7 @@ func (rr *ReceptionRepository) GetReceptionsByPVZId(pvzId string, startDate, end
 			end = *endDate
 		}
 
-		rows, err = rr.db.Query(getReceptionsByPVZIdFiltered, pvzId, start, end)
+		rows, err = rr.db.Query(getReceptionsByPVZIdsFiltered, pq.Array(pvzIds), start, end)
 	}
 
 	if err != nil {

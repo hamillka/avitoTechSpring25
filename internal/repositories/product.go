@@ -6,6 +6,7 @@ import (
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 )
 
 type ProductRepository struct {
@@ -13,10 +14,14 @@ type ProductRepository struct {
 }
 
 const (
-	addProduct               = "INSERT INTO products (product_type, reception_id) VALUES ($1, $2) RETURNING id, date_time, product_type, reception_id"
-	getProductsByReceptionId = "SELECT * FROM products WHERE reception_id = $1 AND date_time BETWEEN $2 AND $3"
-	getLastProduct           = "SELECT * FROM products WHERE reception_id = $1 ORDER BY date_time DESC LIMIT 1"
-	deleteProduct            = "DELETE FROM products WHERE id = $1"
+	addProduct                = "INSERT INTO products (product_type, reception_id) VALUES ($1, $2) RETURNING id, date_time, product_type, reception_id"
+	getLastProduct            = "SELECT * FROM products WHERE reception_id = $1 ORDER BY date_time DESC LIMIT 1"
+	deleteProduct             = "DELETE FROM products WHERE id = $1"
+	getProductsByReceptionIds = `
+	SELECT id, date_time, product_type, reception_id 
+	FROM products 
+	WHERE reception_id = ANY($1) AND date_time BETWEEN $2 AND $3
+`
 )
 
 func NewProductRepository(db *sqlx.DB) *ProductRepository {
@@ -67,7 +72,7 @@ func (pr *ProductRepository) DeleteProduct(prodId string) error {
 	return nil
 }
 
-func (pr *ProductRepository) GetProductsByReceptionId(recId string, startDate, endDate *time.Time) ([]models.Product, error) {
+func (pr *ProductRepository) GetProductsByReceptionIds(recIds []string, startDate, endDate *time.Time) ([]models.Product, error) {
 	start := time.Time{}
 	end := time.Now()
 
@@ -81,13 +86,11 @@ func (pr *ProductRepository) GetProductsByReceptionId(recId string, startDate, e
 
 	var products []models.Product
 
-	rows, err := pr.db.Query(getProductsByReceptionId, recId, start, end)
+	rows, err := pr.db.Query(getProductsByReceptionIds, pq.Array(recIds), start, end)
 	if err != nil {
 		return products, nil
 	}
-	if err := rows.Err(); err != nil {
-		return products, nil
-	}
+	defer rows.Close()
 
 	for rows.Next() {
 		product := models.Product{}
@@ -101,7 +104,10 @@ func (pr *ProductRepository) GetProductsByReceptionId(recId string, startDate, e
 		}
 		products = append(products, product)
 	}
-	defer rows.Close()
+
+	if err := rows.Err(); err != nil {
+		return products, nil
+	}
 
 	return products, nil
 }

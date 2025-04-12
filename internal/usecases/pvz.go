@@ -46,8 +46,8 @@ func (pvzs *PVZService) CreatePVZ(city string) (models.PVZ, error) {
 func (pvzs *PVZService) GetPVZWithPagination(startDate, endDate *time.Time, page, limit int) ([]models.PVZWithReceptions, error) {
 	/*
 		Достать все ПВЗ
-		Достать все приемки для этих ПВЗ
-		Достать все продукты для этих приемок
+		Достать все приемки для этих ПВЗ одним запросом
+		Достать все продукты для этих приемок одним запросом
 		Сгруппировать все по пвз
 		Вернуть все ПВЗ с приемками и продуктами
 	*/
@@ -58,15 +58,50 @@ func (pvzs *PVZService) GetPVZWithPagination(startDate, endDate *time.Time, page
 		return nil, err
 	}
 
-	result := make([]models.PVZWithReceptions, 0, len(allPVZs))
+	if len(allPVZs) == 0 {
+		return []models.PVZWithReceptions{}, nil
+	}
+
+	pvzIds := make([]string, len(allPVZs))
+	for i, pvz := range allPVZs {
+		pvzIds[i] = pvz.Id
+	}
+
+	allReceptions, err := pvzs.recRepo.GetReceptionsByPVZIds(pvzIds, startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
 
 	dateFiltersApplied := startDate != nil || endDate != nil
+	if dateFiltersApplied && len(allReceptions) == 0 {
+		return []models.PVZWithReceptions{}, nil
+	}
 
-	for _, pvz := range allPVZs {
-		receptions, err := pvzs.recRepo.GetReceptionsByPVZId(pvz.Id, startDate, endDate)
+	receptionsByPVZ := make(map[string][]models.Reception)
+	receptionIds := make([]string, 0, len(allReceptions))
+
+	for _, reception := range allReceptions {
+		receptionsByPVZ[reception.PVZId] = append(receptionsByPVZ[reception.PVZId], reception)
+		receptionIds = append(receptionIds, reception.Id)
+	}
+
+	var allProducts []models.Product
+	if len(receptionIds) > 0 {
+		allProducts, err = pvzs.prodRepo.GetProductsByReceptionIds(receptionIds, startDate, endDate)
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	productsByReception := make(map[string][]models.Product)
+	for _, product := range allProducts {
+		productsByReception[product.ReceptionId] = append(productsByReception[product.ReceptionId], product)
+	}
+
+	result := make([]models.PVZWithReceptions, 0, len(allPVZs))
+
+	for _, pvz := range allPVZs {
+		receptions := receptionsByPVZ[pvz.Id]
 
 		if dateFiltersApplied && len(receptions) == 0 {
 			continue
@@ -75,10 +110,7 @@ func (pvzs *PVZService) GetPVZWithPagination(startDate, endDate *time.Time, page
 		receptionsWithProducts := make([]models.ReceptionWithProducts, 0, len(receptions))
 
 		for _, reception := range receptions {
-			products, err := pvzs.prodRepo.GetProductsByReceptionId(reception.Id, startDate, endDate)
-			if err != nil {
-				return nil, err
-			}
+			products := productsByReception[reception.Id]
 
 			receptionsWithProducts = append(receptionsWithProducts, models.ReceptionWithProducts{
 				Reception: reception,

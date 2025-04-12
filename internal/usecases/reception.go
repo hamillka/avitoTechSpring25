@@ -12,7 +12,7 @@ type ReceptionRepository interface {
 	GetLastReception(pvzId string) (models.Reception, error)
 	CreateReception(pvzId string) (models.Reception, error)
 	UpdateReceptionStatus(recId, status string) (models.Reception, error)
-	GetReceptionsByPVZId(pvzId string, startDate, endDate *time.Time) ([]models.Reception, error)
+	GetReceptionsByPVZIds(pvzIds []string, startDate, endDate *time.Time) ([]models.Reception, error)
 }
 
 type ReceptionService struct {
