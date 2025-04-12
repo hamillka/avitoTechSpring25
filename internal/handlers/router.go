@@ -16,6 +16,8 @@ func Router(
 	logger *zap.SugaredLogger,
 ) *mux.Router {
 	router := mux.NewRouter()
+	router.Use(middlewares.MetricsMiddleware)
+
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	auth := router.PathPrefix("").Subrouter()

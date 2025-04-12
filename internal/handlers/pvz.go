@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/middlewares"
+	"github.com/hamillka/avitoTechSpring25/internal/metrics"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
 	"go.uber.org/zap"
 )
@@ -126,6 +127,8 @@ func (pvzh *PVZHandler) CreatePVZ(w http.ResponseWriter, r *http.Request) {
 		pvzh.logger.Errorf("failed to encode response: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	metrics.PVZCreated.Inc()
 }
 
 // GetPVZWithPagination godoc

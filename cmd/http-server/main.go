@@ -6,8 +6,10 @@ import (
 	"github.com/hamillka/avitoTechSpring25/internal/db"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers"
 	"github.com/hamillka/avitoTechSpring25/internal/logger"
+	"github.com/hamillka/avitoTechSpring25/internal/metrics"
 	"github.com/hamillka/avitoTechSpring25/internal/repositories"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	cfg "github.com/hamillka/avitoTechSpring25/internal/config"
 )
@@ -59,6 +61,15 @@ func main() {
 	us := usecases.NewUserService(ur)
 
 	r := handlers.Router(ps, pvzs, rs, us, logger)
+
+	metrics.Register()
+
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+		if err = http.ListenAndServe(":9000", nil); err != nil {
+			logger.Errorf("metrics server error: %v", err)
+		}
+	}()
 
 	port := config.HttpPort
 	logger.Info("Server is started on port ", port)

@@ -9,6 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/middlewares"
+	"github.com/hamillka/avitoTechSpring25/internal/metrics"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
 	"go.uber.org/zap"
 )
@@ -131,4 +132,6 @@ func (ph *ProductHandler) AddProductToReception(w http.ResponseWriter, r *http.R
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	metrics.ProductsAdded.Inc()
 }

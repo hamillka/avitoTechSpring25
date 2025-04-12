@@ -4,10 +4,10 @@ APP=$(HTTP) $(GRPC)
 .PHONY: build run stop swag-gen unit-test integration-test
 
 build:
-	docker-compose build $(APP)
+	docker-compose build
 
 run:
-	docker-compose up -d $(APP)
+	docker-compose up -d
 
 stop:
 	docker-compose down
