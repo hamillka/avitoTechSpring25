@@ -60,7 +60,7 @@ func main() {
 
 	r := handlers.Router(ps, pvzs, rs, us, logger)
 
-	port := config.Port
+	port := config.HttpPort
 	logger.Info("Server is started on port ", port)
 	err = http.ListenAndServe(":"+port, r)
 	if err != nil {

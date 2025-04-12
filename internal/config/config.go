@@ -7,10 +7,11 @@ import (
 )
 
 type Config struct {
-	DB      db.DatabaseConfig `envconfig:"DB"`
-	Port    string            `envconfig:"PORT"`
-	Timeout int64             `envconfig:"TIMEOUT"`
-	Log     logger.LogConfig  `envconfig:"LOG"`
+	DB       db.DatabaseConfig `envconfig:"DB"`
+	HttpPort string            `envconfig:"HTTP_PORT"`
+	GRPCPort string            `envconfig:"GRPC_PORT"`
+	Timeout  int64             `envconfig:"TIMEOUT"`
+	Log      logger.LogConfig  `envconfig:"LOG"`
 }
 
 func New() (*Config, error) {
