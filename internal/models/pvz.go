@@ -1,9 +1,9 @@
 package models
 
 type PVZ struct {
-	Id               string
-	RegistrationDate string
-	City             string
+	Id               string `db:"id"`
+	RegistrationDate string `db:"registration_date"`
+	City             string `db:"city"`
 }
 
 type PVZWithReceptions struct {

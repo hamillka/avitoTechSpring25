@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"context"
+
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
 	"github.com/jmoiron/sqlx"
@@ -81,4 +83,10 @@ func (pvzr *PVZRepository) GetPVZsWithPagination(offset, limit int) ([]models.PV
 	}
 
 	return pvzs, nil
+}
+
+func (pvzr *PVZRepository) GetAllPVZs(ctx context.Context) ([]models.PVZ, error) {
+	var pvzs []models.PVZ
+	err := pvzr.db.SelectContext(ctx, &pvzs, "SELECT * FROM pvzs")
+	return pvzs, err
 }

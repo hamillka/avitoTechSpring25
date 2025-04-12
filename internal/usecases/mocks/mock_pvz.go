@@ -10,6 +10,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	models "github.com/hamillka/avitoTechSpring25/internal/models"
@@ -53,6 +54,21 @@ func (m *MockPVZRepository) CreatePVZ(city string) (models.PVZ, error) {
 func (mr *MockPVZRepositoryMockRecorder) CreatePVZ(city any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePVZ", reflect.TypeOf((*MockPVZRepository)(nil).CreatePVZ), city)
+}
+
+// GetAllPVZs mocks base method.
+func (m *MockPVZRepository) GetAllPVZs(ctx context.Context) ([]models.PVZ, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllPVZs", ctx)
+	ret0, _ := ret[0].([]models.PVZ)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllPVZs indicates an expected call of GetAllPVZs.
+func (mr *MockPVZRepositoryMockRecorder) GetAllPVZs(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllPVZs", reflect.TypeOf((*MockPVZRepository)(nil).GetAllPVZs), ctx)
 }
 
 // GetPVZById mocks base method.

@@ -2,6 +2,7 @@
 package usecases
 
 import (
+	"context"
 	"time"
 
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
@@ -12,6 +13,7 @@ type PVZRepository interface {
 	CreatePVZ(city string) (models.PVZ, error)
 	GetPVZById(pvzId string) (models.PVZ, error)
 	GetPVZsWithPagination(offset, limit int) ([]models.PVZ, error)
+	GetAllPVZs(ctx context.Context) ([]models.PVZ, error)
 }
 
 type PVZService struct {
@@ -147,4 +149,8 @@ func (pvzs *PVZService) DeleteLastProduct(pvzId string) error {
 	}
 
 	return nil
+}
+
+func (pvzs *PVZService) GetAllPVZs(ctx context.Context) ([]models.PVZ, error) {
+	return pvzs.pvzRepo.GetAllPVZs(ctx)
 }
