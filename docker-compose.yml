@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: postgres
+    volumes:
+      - ./sql-scripts/1-init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./sql-scripts/1-init-test.sql:/docker-entrypoint-initdb.d/1-init-test.sql
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U postgres -d pvz_service'" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  pvz-service:
+    container_name: pvz-service
+    build:
+      context: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - postgres
+    restart: on-failure
+    env_file:
+      - configs/cfg.env
+volumes:
+  db-data:
