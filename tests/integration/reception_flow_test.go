@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/hamillka/avitoTechSpring25/internal/db"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers"
@@ -85,6 +86,7 @@ func TestReceptionFlow(t *testing.T) {
 	for i := 1; i <= 50; i++ {
 		addProduct(t, router, products[i%3], pvzID)
 	}
+	time.Sleep(3 * time.Second)
 
 	closeReception(t, router, pvzID)
 
