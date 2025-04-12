@@ -34,5 +34,22 @@ services:
     restart: on-failure
     env_file:
       - configs/cfg.env
+
+  grpc-service:
+    container_name: grpc-service
+    build:
+      context: ./
+      dockerfile: Dockerfile.grpc
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - postgres
+    restart: on-failure
+    env_file:
+      - configs/cfg.env
+
 volumes:
   db-data:

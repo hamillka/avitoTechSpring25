@@ -1,4 +1,6 @@
-APP=pvz-service
+HTTP=pvz-service
+GRPC=grpc-service
+APP=$(HTTP) $(GRPC)
 .PHONY: build run stop swag-gen unit-test integration-test
 
 build:

@@ -15,12 +15,12 @@ COPY go.mod ./
 RUN go mod download
 
 COPY . .
-RUN go build -o /app/bin/pvz-service /app/cmd/http-server/main.go
+RUN go build -o /app/bin/grpc-service /app/cmd/grpc-server/main.go
 
 FROM ${RUN_IMAGE}
 
 COPY --from=build /app/bin /bin
 
-EXPOSE ${HTTP_PORT}
+EXPOSE ${GRPC_PORT}
 
-CMD ["/bin/pvz-service"]
+CMD ["/bin/grpc-service"]
