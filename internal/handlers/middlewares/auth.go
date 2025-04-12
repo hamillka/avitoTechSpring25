@@ -40,8 +40,20 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return Secret, nil
 		})
 
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			errorDto := &dto.ErrorDto{
+				Message: "Неверный токен",
+			}
+			err = json.NewEncoder(w).Encode(errorDto)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+			return
+		}
+
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			ctx := context.WithValue(r.Context(), "props", claims)
+			ctx := context.WithValue(r.Context(), Key("props"), claims)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		} else {
 			w.WriteHeader(http.StatusUnauthorized)
