@@ -1,6 +1,6 @@
-CREATE DATABASE pvz-service;
+CREATE DATABASE pvz_service;
 
-\connect "pvz-service";
+\connect "pvz_service";
 
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -18,13 +18,13 @@ CREATE TABLE pvzs (
 CREATE TABLE receptions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     date_time TIMESTAMPTZ DEFAULT NOW(),
-    pvz_id UUID NOT NULL REFERENCES pvz(id) ON DELETE CASCADE,
-    status TEXT NOT NULL CHECK (status IN ('in_progress', 'close'))
+    pvz_id UUID NOT NULL REFERENCES pvzs(id) ON DELETE CASCADE,
+    status TEXT NOT NULL DEFAULT 'in_progress' CHECK (status IN ('in_progress', 'close'))
 );
 
 CREATE TABLE products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     date_time TIMESTAMPTZ DEFAULT NOW(),
-    type TEXT NOT NULL CHECK (type IN ('электроника', 'одежда', 'обувь')),
+    product_type TEXT NOT NULL CHECK (product_type IN ('электроника', 'одежда', 'обувь')),
     reception_id UUID NOT NULL REFERENCES receptions(id) ON DELETE CASCADE
 );
