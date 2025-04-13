@@ -158,6 +158,7 @@ gRPC-сервис будет запущен на localhost с портом 3000.
 - Чтобы проверить работоспособность gRPC-метода, необходимо из корневой папки проекта выполнить
   команду `grpcurl -plaintext -proto internal/grpc/pvz_v1/pvz.proto localhost:3000 pvz.v1.PVZService/GetPVZList`,
   предварительно установив утилиту `grpcurl` (`brew install grpcurl` на MacOS)
+- Полученный по ручкам /login и /dummyLogin JWT-токен нужно передавать в заголовке запроса `auth-x` как `Bearer <ВАШ-ТОКЕН>`
 
 ### База данных
 
