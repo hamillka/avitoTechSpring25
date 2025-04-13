@@ -231,7 +231,7 @@ total:                                    (statements)                    77.8%
   удовлетворяет требованию в 1k RPS.
 
 Если нужно запустить тестирование заново, нужно предварительно установить утилиту Grafana K6 (`brew install k6` для
-MacOS или `sudo apt-get install k6` для Ununtu), а затем выполнить команду `make load`, находясь в корневой директории.
+MacOS или `sudo apt-get install k6` для Ubuntu), а затем выполнить команду `make load`, находясь в корневой директории.
 
 ### Prometheus + Grafana
 
