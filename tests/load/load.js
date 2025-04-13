@@ -13,9 +13,10 @@ export let options = {
     },
   },
   thresholds: {
-    http_req_duration: ['p(95)<100'],   
+    http_req_duration: ['p(99.99)<100'],   
     http_req_failed: ['rate<0.0001'],   
   },
+  summaryTrendStats: ["med", "p(95)", "p(99)", "p(99.99)"]
 };
 
 export default function () {
