@@ -24,7 +24,7 @@ unit-test:
 
 integration-test:
 	docker-compose up -d postgres
-	go test -v ./tests/integration/...
+	go test -v ./tests/integration -tags=integration
 
 load:
 	k6 run tests/load/load.js
