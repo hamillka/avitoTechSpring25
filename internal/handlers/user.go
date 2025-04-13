@@ -277,7 +277,6 @@ func (uh *UserHandler) DummyLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// CHECK (code duplication with UserLogin)
 	t, err := createToken(dummyLoginDto.Role)
 	if err != nil {
 		uh.logger.Errorf("failed to create token: %v", err)

@@ -14,7 +14,7 @@ import (
 
 type Key string
 
-var Secret = []byte(os.Getenv("JWT_SECRET")) // CHECK
+var Secret = []byte(os.Getenv("JWT_SECRET"))
 
 var errSigningMethod = errors.New("signing method error")
 

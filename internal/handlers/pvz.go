@@ -154,7 +154,7 @@ func (pvzh *PVZHandler) GetPVZWithPagination(w http.ResponseWriter, r *http.Requ
 	endDateStr, _ := GetQueryParam(r, "endDate", "")
 
 	page, err := GetQueryParam(r, "page", 1)
-	if err != nil || page < 1 { // CHECK
+	if err != nil || page < 1 {
 		pvzh.logger.Errorf("error in extracting page from query: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		errorDto := &dto.ErrorDto{
@@ -168,7 +168,7 @@ func (pvzh *PVZHandler) GetPVZWithPagination(w http.ResponseWriter, r *http.Requ
 	}
 
 	limit, err := GetQueryParam(r, "limit", 10)
-	if err != nil || limit < 1 || limit > 30 { // CHECK
+	if err != nil || limit < 1 || limit > 30 {
 		pvzh.logger.Errorf("error in extracting limit from query: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		errorDto := &dto.ErrorDto{
