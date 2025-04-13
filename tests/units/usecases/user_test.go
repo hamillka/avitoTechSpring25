@@ -11,6 +11,7 @@ import (
 	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -28,7 +29,7 @@ func TestUserRegister_Success(t *testing.T) {
 
 	user, err := service.UserRegister("test@example.com", "password", "user")
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "u1", user.Id)
 	assert.Equal(t, "test@example.com", user.Email)
 }
@@ -64,7 +65,7 @@ func TestUserLogin_Success(t *testing.T) {
 
 	user, err := service.UserLogin("test@example.com", "password")
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "u1", user.Id)
 }
 

@@ -11,6 +11,7 @@ import (
 	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCreatePVZ_Success(t *testing.T) {
@@ -26,7 +27,7 @@ func TestCreatePVZ_Success(t *testing.T) {
 	pvzRepo.EXPECT().CreatePVZ("Москва").Return(models.PVZ{Id: "1", City: "Москва"}, nil)
 
 	pvz, err := service.CreatePVZ("Москва")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "Москва", pvz.City)
 }
 
@@ -45,7 +46,7 @@ func TestCloseLastReception_Success(t *testing.T) {
 	recRepo.EXPECT().UpdateReceptionStatus("rec1", "close").Return(models.Reception{Id: "rec1", Status: "close"}, nil)
 
 	rec, err := service.CloseLastReception("pvz1")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "close", rec.Status)
 }
 
@@ -130,7 +131,7 @@ func TestGetPVZWithPagination_EmptyDates(t *testing.T) {
 
 	result, err := service.GetPVZWithPagination(nil, nil, 1, 10)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 1, len(result))
 	assert.Equal(t, "pvz1", result[0].PVZ.Id)
 	assert.Equal(t, 1, len(result[0].Receptions))

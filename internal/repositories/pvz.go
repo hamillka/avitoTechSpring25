@@ -48,7 +48,6 @@ func (pvzr *PVZRepository) GetPVZById(pvzId string) (models.PVZ, error) {
 			&pvz.RegistrationDate,
 			&pvz.City,
 		)
-
 	if err != nil {
 		return models.PVZ{}, dto.ErrPVZNotFound
 	}

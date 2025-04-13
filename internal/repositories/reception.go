@@ -55,7 +55,6 @@ func (rr *ReceptionRepository) GetLastReception(pvzId string) (models.Reception,
 	}
 
 	return reception, nil
-
 }
 
 func (rr *ReceptionRepository) CreateReception(pvzId string) (models.Reception, error) {

@@ -183,7 +183,7 @@ func (uh *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userRegisterRequestDto.Role != "employee" && userRegisterRequestDto.Role != "moderator" {
+	if userRegisterRequestDto.Role != dto.RoleEmployee && userRegisterRequestDto.Role != dto.RoleModerator {
 		uh.logger.Errorf("invalid role: %v", userRegisterRequestDto.Role)
 
 		w.WriteHeader(http.StatusBadRequest)

@@ -58,7 +58,7 @@ func setupTestEnvironment(t *testing.T) (http.Handler, func()) {
 
 		err = testLogger.Sync()
 		if err != nil {
-			fmt.Printf("Error syncing logger: %v\n", err)
+			testLogger.Errorf("Error while syncing logger: %v", err)
 		}
 	}
 

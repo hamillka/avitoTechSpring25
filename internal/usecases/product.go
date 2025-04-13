@@ -43,7 +43,7 @@ func (ps *ProductService) AddProductToReception(productType, pvzId string) (mode
 	}
 
 	lastReception, err := ps.recRepo.GetLastReception(pvzId)
-	if err != nil || lastReception.Status != "in_progress" {
+	if err != nil || lastReception.Status != models.INPROGRESS {
 		return models.Product{}, dto.ErrNoActiveReception
 	}
 
