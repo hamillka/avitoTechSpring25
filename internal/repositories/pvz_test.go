@@ -1,4 +1,4 @@
-package repositories_test
+package repositories
 
 import (
 	"database/sql"
@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/hamillka/avitoTechSpring25/internal/repositories"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 )
@@ -16,7 +15,7 @@ func TestPVZRepository_CreatePVZ_Success(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewPVZRepository(sqlxDB)
+	repo := NewPVZRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO pvzs (city) VALUES ($1) RETURNING id, registration_date, city`)).
 		WithArgs("Москва").
@@ -33,7 +32,7 @@ func TestPVZRepository_CreatePVZ_Success(t *testing.T) {
 func TestPVZRepository_CreatePVZ_Error(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewPVZRepository(sqlxDB)
+	repo := NewPVZRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO pvzs (city) VALUES ($1) RETURNING id, registration_date, city`)).
 		WithArgs("Казань").
@@ -46,7 +45,7 @@ func TestPVZRepository_CreatePVZ_Error(t *testing.T) {
 func TestPVZRepository_GetPVZById_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewPVZRepository(sqlxDB)
+	repo := NewPVZRepository(sqlxDB)
 	timeNow := time.Now()
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, registration_date, city FROM pvzs WHERE id = $1`)).
@@ -63,7 +62,7 @@ func TestPVZRepository_GetPVZById_Success(t *testing.T) {
 func TestPVZRepository_GetPVZById_NotFound(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewPVZRepository(sqlxDB)
+	repo := NewPVZRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, registration_date, city FROM pvzs WHERE id = $1`)).
 		WithArgs("notfound").
@@ -76,7 +75,7 @@ func TestPVZRepository_GetPVZById_NotFound(t *testing.T) {
 func TestPVZRepository_GetPVZsWithPagination_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewPVZRepository(sqlxDB)
+	repo := NewPVZRepository(sqlxDB)
 	timeNow := time.Now()
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, registration_date, city FROM pvzs ORDER BY registration_date DESC LIMIT $1 OFFSET $2`)).
@@ -95,7 +94,7 @@ func TestPVZRepository_GetPVZsWithPagination_Success(t *testing.T) {
 func TestPVZRepository_GetPVZsWithPagination_DBError(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewPVZRepository(sqlxDB)
+	repo := NewPVZRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, registration_date, city FROM pvzs ORDER BY registration_date DESC LIMIT $1 OFFSET $2`)).
 		WithArgs(10, 0).

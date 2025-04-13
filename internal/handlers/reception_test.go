@@ -1,4 +1,4 @@
-package handlers_test
+package handlers
 
 import (
 	"bytes"
@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hamillka/avitoTechSpring25/internal/handlers"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/mocks"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
@@ -19,7 +18,7 @@ import (
 )
 
 func TestCreateReception_Forbidden(t *testing.T) {
-	handler := handlers.NewReceptionHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewReceptionHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/receptions", nil)
 	req = withRole("moderator", req)
 	w := httptest.NewRecorder()
@@ -28,7 +27,7 @@ func TestCreateReception_Forbidden(t *testing.T) {
 }
 
 func TestCreateReception_InvalidJSON(t *testing.T) {
-	handler := handlers.NewReceptionHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewReceptionHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/receptions", bytes.NewBufferString("{bad json"))
 	req = withRole(dto.RoleEmployee, req)
 	w := httptest.NewRecorder()
@@ -40,7 +39,7 @@ func TestCreateReception_ErrPVZNotFound(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockReceptionService(ctrl)
-	handler := handlers.NewReceptionHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewReceptionHandler(service, zaptest.NewLogger(t).Sugar())
 
 	reqDto := dto.CreateReceptionRequestDto{PVZId: "pvz404"}
 	jsonBody, _ := json.Marshal(reqDto)
@@ -58,7 +57,7 @@ func TestCreateReception_ErrAlreadyHasReception(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockReceptionService(ctrl)
-	handler := handlers.NewReceptionHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewReceptionHandler(service, zaptest.NewLogger(t).Sugar())
 
 	reqDto := dto.CreateReceptionRequestDto{PVZId: "pvz1"}
 	jsonBody, _ := json.Marshal(reqDto)
@@ -76,7 +75,7 @@ func TestCreateReception_InternalError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockReceptionService(ctrl)
-	handler := handlers.NewReceptionHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewReceptionHandler(service, zaptest.NewLogger(t).Sugar())
 
 	reqDto := dto.CreateReceptionRequestDto{PVZId: "pvz1"}
 	jsonBody, _ := json.Marshal(reqDto)
@@ -94,7 +93,7 @@ func TestCreateReception_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockReceptionService(ctrl)
-	handler := handlers.NewReceptionHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewReceptionHandler(service, zaptest.NewLogger(t).Sugar())
 
 	reception := models.Reception{Id: "rec123", PVZId: "pvz1", Status: "in_progress", DateTime: time.Now().String()}
 	reqDto := dto.CreateReceptionRequestDto{PVZId: "pvz1"}

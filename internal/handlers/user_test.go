@@ -1,4 +1,4 @@
-package handlers_test
+package handlers
 
 import (
 	"bytes"
@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hamillka/avitoTechSpring25/internal/handlers"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/mocks"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
@@ -18,7 +17,7 @@ import (
 )
 
 func TestUserHandler_Login_BadJSON(t *testing.T) {
-	h := handlers.NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBufferString("{bad json"))
 	w := httptest.NewRecorder()
 	h.Login(w, req)
@@ -26,7 +25,7 @@ func TestUserHandler_Login_BadJSON(t *testing.T) {
 }
 
 func TestUserHandler_Login_InvalidEmail(t *testing.T) {
-	h := handlers.NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
 	body := dto.UserLoginRequestDto{Email: "invalid", Password: "pass"}
 	data, _ := json.Marshal(body)
 	req := httptest.NewRequest(http.MethodPost, "/login", bytes.NewReader(data))
@@ -39,7 +38,7 @@ func TestUserHandler_Login_AuthFailed(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockService := mocks.NewMockUserService(ctrl)
-	h := handlers.NewUserHandler(mockService, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(mockService, zaptest.NewLogger(t).Sugar())
 
 	mockService.EXPECT().UserLogin("test@mail.com", "pass").Return(models.User{}, errors.New("unauthorized"))
 	body := dto.UserLoginRequestDto{Email: "test@mail.com", Password: "pass"}
@@ -54,7 +53,7 @@ func TestUserHandler_Login_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockService := mocks.NewMockUserService(ctrl)
-	h := handlers.NewUserHandler(mockService, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(mockService, zaptest.NewLogger(t).Sugar())
 
 	mockService.EXPECT().UserLogin("test@mail.com", "pass").Return(models.User{
 		Id:    "1",
@@ -71,7 +70,7 @@ func TestUserHandler_Login_Success(t *testing.T) {
 }
 
 func TestUserHandler_Register_BadJSON(t *testing.T) {
-	h := handlers.NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewBufferString("bad json"))
 	w := httptest.NewRecorder()
 	h.Register(w, req)
@@ -79,7 +78,7 @@ func TestUserHandler_Register_BadJSON(t *testing.T) {
 }
 
 func TestUserHandler_Register_InvalidEmail(t *testing.T) {
-	h := handlers.NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
 	body := dto.UserRegisterRequestDto{Email: "bad", Password: "123", Role: "employee"}
 	data, _ := json.Marshal(body)
 	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewReader(data))
@@ -89,7 +88,7 @@ func TestUserHandler_Register_InvalidEmail(t *testing.T) {
 }
 
 func TestUserHandler_Register_InvalidRole(t *testing.T) {
-	h := handlers.NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
 	body := dto.UserRegisterRequestDto{Email: "user@mail.com", Password: "123", Role: "admin"}
 	data, _ := json.Marshal(body)
 	req := httptest.NewRequest(http.MethodPost, "/register", bytes.NewReader(data))
@@ -102,7 +101,7 @@ func TestUserHandler_Register_ServiceError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockService := mocks.NewMockUserService(ctrl)
-	h := handlers.NewUserHandler(mockService, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(mockService, zaptest.NewLogger(t).Sugar())
 
 	mockService.EXPECT().UserRegister("user@mail.com", "123", "moderator").Return(models.User{}, errors.New("fail"))
 
@@ -118,7 +117,7 @@ func TestUserHandler_Register_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockService := mocks.NewMockUserService(ctrl)
-	h := handlers.NewUserHandler(mockService, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(mockService, zaptest.NewLogger(t).Sugar())
 
 	mockService.EXPECT().UserRegister("user@mail.com", "123", "moderator").Return(models.User{
 		Id:    "u1",
@@ -135,7 +134,7 @@ func TestUserHandler_Register_Success(t *testing.T) {
 }
 
 func TestUserHandler_DummyLogin_InvalidJSON(t *testing.T) {
-	h := handlers.NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/dummyLogin", bytes.NewBufferString("bad"))
 	w := httptest.NewRecorder()
 	h.DummyLogin(w, req)
@@ -143,7 +142,7 @@ func TestUserHandler_DummyLogin_InvalidJSON(t *testing.T) {
 }
 
 func TestUserHandler_DummyLogin_InvalidRole(t *testing.T) {
-	h := handlers.NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
 	body := dto.DummyLoginRequestDto{Role: "hacker"}
 	data, _ := json.Marshal(body)
 	req := httptest.NewRequest(http.MethodPost, "/dummyLogin", bytes.NewReader(data))
@@ -153,7 +152,7 @@ func TestUserHandler_DummyLogin_InvalidRole(t *testing.T) {
 }
 
 func TestUserHandler_DummyLogin_Success(t *testing.T) {
-	h := handlers.NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
+	h := NewUserHandler(nil, zaptest.NewLogger(t).Sugar())
 	body := dto.DummyLoginRequestDto{Role: "employee"}
 	data, _ := json.Marshal(body)
 	req := httptest.NewRequest(http.MethodPost, "/dummyLogin", bytes.NewReader(data))

@@ -1,4 +1,4 @@
-package usecases_test
+package usecases
 
 import (
 	"errors"
@@ -8,7 +8,6 @@ import (
 
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
-	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -20,7 +19,7 @@ func TestUserRegister_Success(t *testing.T) {
 	defer ctrl.Finish()
 
 	repo := mocks.NewMockUserRepository(ctrl)
-	service := usecases.NewUserService(repo)
+	service := NewUserService(repo)
 
 	repo.EXPECT().UserLogin("test@example.com", "password").Return(models.User{}, errors.New("not found"))
 
@@ -39,7 +38,7 @@ func TestUserRegister_AlreadyExists(t *testing.T) {
 	defer ctrl.Finish()
 
 	repo := mocks.NewMockUserRepository(ctrl)
-	service := usecases.NewUserService(repo)
+	service := NewUserService(repo)
 
 	hashed, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
 
@@ -56,7 +55,7 @@ func TestUserLogin_Success(t *testing.T) {
 	defer ctrl.Finish()
 
 	repo := mocks.NewMockUserRepository(ctrl)
-	service := usecases.NewUserService(repo)
+	service := NewUserService(repo)
 
 	hashed, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
 
@@ -74,7 +73,7 @@ func TestUserLogin_WrongPassword(t *testing.T) {
 	defer ctrl.Finish()
 
 	repo := mocks.NewMockUserRepository(ctrl)
-	service := usecases.NewUserService(repo)
+	service := NewUserService(repo)
 
 	hashed, _ := bcrypt.GenerateFromPassword([]byte("correctpass"), bcrypt.DefaultCost)
 

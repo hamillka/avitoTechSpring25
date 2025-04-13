@@ -1,4 +1,4 @@
-package repositories_test
+package repositories
 
 import (
 	"database/sql"
@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/hamillka/avitoTechSpring25/internal/repositories"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +14,7 @@ import (
 func TestAddProduct_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewProductRepository(sqlxDB)
+	repo := NewProductRepository(sqlxDB)
 
 	time := time.Now()
 	mock.ExpectQuery(regexp.QuoteMeta("INSERT INTO products (product_type, reception_id) VALUES ($1, $2) RETURNING id, date_time, product_type, reception_id")).
@@ -31,7 +30,7 @@ func TestAddProduct_Success(t *testing.T) {
 func TestAddProduct_Error(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewProductRepository(sqlxDB)
+	repo := NewProductRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta("INSERT INTO products (product_type, reception_id) VALUES ($1, $2) RETURNING id, date_time, product_type, reception_id")).
 		WithArgs("одежда", "rec1").
@@ -44,7 +43,7 @@ func TestAddProduct_Error(t *testing.T) {
 func TestGetLastProduct_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewProductRepository(sqlxDB)
+	repo := NewProductRepository(sqlxDB)
 
 	time := time.Now()
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM products WHERE reception_id = $1 ORDER BY date_time DESC LIMIT 1")).
@@ -60,7 +59,7 @@ func TestGetLastProduct_Success(t *testing.T) {
 func TestGetLastProduct_Error(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewProductRepository(sqlxDB)
+	repo := NewProductRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM products WHERE reception_id = $1 ORDER BY date_time DESC LIMIT 1")).
 		WithArgs("rec1").
@@ -73,7 +72,7 @@ func TestGetLastProduct_Error(t *testing.T) {
 func TestDeleteProduct_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewProductRepository(sqlxDB)
+	repo := NewProductRepository(sqlxDB)
 
 	mock.ExpectExec(regexp.QuoteMeta("DELETE FROM products WHERE id = $1")).
 		WithArgs("prod1").
@@ -86,7 +85,7 @@ func TestDeleteProduct_Success(t *testing.T) {
 func TestDeleteProduct_Error(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewProductRepository(sqlxDB)
+	repo := NewProductRepository(sqlxDB)
 
 	mock.ExpectExec(regexp.QuoteMeta("DELETE FROM products WHERE id = $1")).
 		WithArgs("prod1").
@@ -99,7 +98,7 @@ func TestDeleteProduct_Error(t *testing.T) {
 func TestGetProductsByReceptionIds_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewProductRepository(sqlxDB)
+	repo := NewProductRepository(sqlxDB)
 
 	time := time.Now()
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT id, date_time, product_type, reception_id FROM products WHERE reception_id = ANY($1) AND date_time BETWEEN $2 AND $3")).
@@ -118,7 +117,7 @@ func TestGetProductsByReceptionIds_Success(t *testing.T) {
 func TestGetProductsByReceptionIds_ErrorInQuery(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewProductRepository(sqlxDB)
+	repo := NewProductRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT id, date_time, product_type, reception_id FROM products WHERE reception_id = ANY($1) AND date_time BETWEEN $2 AND $3")).
 		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), sqlmock.AnyArg()).

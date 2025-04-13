@@ -1,4 +1,4 @@
-package repositories_test
+package repositories
 
 import (
 	"database/sql"
@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/hamillka/avitoTechSpring25/internal/repositories"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +14,7 @@ import (
 func TestReceptionRepository_GetLastReception_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 	timeNow := time.Now()
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, date_time, pvz_id, status FROM receptions WHERE pvz_id = $1 ORDER BY date_time DESC LIMIT 1`)).
@@ -33,7 +32,7 @@ func TestReceptionRepository_GetLastReception_Success(t *testing.T) {
 func TestReceptionRepository_GetLastReception_Error(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, date_time, pvz_id, status FROM receptions WHERE pvz_id = $1 ORDER BY date_time DESC LIMIT 1`)).
 		WithArgs("pvz123").
@@ -46,7 +45,7 @@ func TestReceptionRepository_GetLastReception_Error(t *testing.T) {
 func TestReceptionRepository_CreateReception_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 	timeNow := time.Now()
 
 	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO receptions (pvz_id) VALUES ($1) RETURNING id, date_time, pvz_id, status`)).
@@ -64,7 +63,7 @@ func TestReceptionRepository_CreateReception_Success(t *testing.T) {
 func TestReceptionRepository_CreateReception_Error(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO receptions (pvz_id) VALUES ($1) RETURNING id, date_time, pvz_id, status`)).
 		WithArgs("pvz1").
@@ -77,7 +76,7 @@ func TestReceptionRepository_CreateReception_Error(t *testing.T) {
 func TestReceptionRepository_UpdateReceptionStatus_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 	timeNow := time.Now()
 
 	mock.ExpectQuery(regexp.QuoteMeta(`UPDATE receptions SET status = $1 WHERE id = $2 RETURNING id, date_time, pvz_id, status`)).
@@ -93,7 +92,7 @@ func TestReceptionRepository_UpdateReceptionStatus_Success(t *testing.T) {
 func TestReceptionRepository_UpdateReceptionStatus_Error(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`UPDATE receptions SET status = $1 WHERE id = $2 RETURNING id, date_time, pvz_id, status`)).
 		WithArgs("close", "rec1").
@@ -106,7 +105,7 @@ func TestReceptionRepository_UpdateReceptionStatus_Error(t *testing.T) {
 func TestReceptionRepository_GetReceptionsByPVZIds_NoFilter(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 	timeNow := time.Now()
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, date_time, pvz_id, status FROM receptions WHERE pvz_id = ANY($1)`)).
@@ -125,7 +124,7 @@ func TestReceptionRepository_GetReceptionsByPVZIds_NoFilter(t *testing.T) {
 func TestReceptionRepository_GetReceptionsByPVZIds_WithFilter(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 	start := time.Now().Add(-24 * time.Hour)
 	end := time.Now()
 
@@ -155,7 +154,7 @@ func TestReceptionRepository_GetReceptionsByPVZIds_WithFilter(t *testing.T) {
 func TestReceptionRepository_GetReceptionsByPVZIds_QueryError(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewReceptionRepository(sqlxDB)
+	repo := NewReceptionRepository(sqlxDB)
 	start := time.Now()
 	end := time.Now()
 

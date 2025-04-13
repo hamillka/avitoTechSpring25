@@ -1,4 +1,4 @@
-package usecases_test
+package usecases
 
 import (
 	"errors"
@@ -7,7 +7,6 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
-	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,7 +20,7 @@ func TestAddProductToReception_Success(t *testing.T) {
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 	pvzRepo := mocks.NewMockPVZRepository(ctrl)
 
-	service := usecases.NewProductService(prodRepo, recRepo, pvzRepo)
+	service := NewProductService(prodRepo, recRepo, pvzRepo)
 
 	pvzRepo.EXPECT().GetPVZById("pvz123").Return(models.PVZ{Id: "pvz123"}, nil)
 	recRepo.EXPECT().GetLastReception("pvz123").Return(models.Reception{Id: "rec1", Status: "in_progress"}, nil)
@@ -41,7 +40,7 @@ func TestAddProductToReception_PVZNotFound(t *testing.T) {
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 	pvzRepo := mocks.NewMockPVZRepository(ctrl)
 
-	service := usecases.NewProductService(prodRepo, recRepo, pvzRepo)
+	service := NewProductService(prodRepo, recRepo, pvzRepo)
 
 	pvzRepo.EXPECT().GetPVZById("pvz404").Return(models.PVZ{}, errors.New("not found"))
 
@@ -58,7 +57,7 @@ func TestAddProductToReception_NoActiveReception(t *testing.T) {
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 	pvzRepo := mocks.NewMockPVZRepository(ctrl)
 
-	service := usecases.NewProductService(prodRepo, recRepo, pvzRepo)
+	service := NewProductService(prodRepo, recRepo, pvzRepo)
 
 	pvzRepo.EXPECT().GetPVZById("pvz123").Return(models.PVZ{Id: "pvz123"}, nil)
 	recRepo.EXPECT().GetLastReception("pvz123").Return(models.Reception{Id: "rec1", Status: "close"}, nil)

@@ -1,4 +1,4 @@
-package handlers_test
+package handlers
 
 import (
 	"bytes"
@@ -13,7 +13,6 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/golang/mock/gomock"
-	"github.com/hamillka/avitoTechSpring25/internal/handlers"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/middlewares"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/mocks"
@@ -33,7 +32,7 @@ func TestAddProductToReception_Success(t *testing.T) {
 
 	service := mocks.NewMockProductService(ctrl)
 	logger := zaptest.NewLogger(t).Sugar()
-	handler := handlers.NewProductHandler(service, logger)
+	handler := NewProductHandler(service, logger)
 
 	reqBody := dto.AddProductRequestDto{
 		Type:  dto.ProductTypeClothes,
@@ -61,7 +60,7 @@ func TestAddProductToReception_Forbidden(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	handler := handlers.NewProductHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewProductHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/products", nil)
 	req = withContextWithRole("moderator", req)
 	w := httptest.NewRecorder()
@@ -74,7 +73,7 @@ func TestAddProductToReception_BadJSON(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	handler := handlers.NewProductHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewProductHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/products", strings.NewReader("{invalid json"))
 	req = withContextWithRole(dto.RoleEmployee, req)
 	w := httptest.NewRecorder()
@@ -87,7 +86,7 @@ func TestAddProductToReception_InvalidType(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	handler := handlers.NewProductHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewProductHandler(nil, zaptest.NewLogger(t).Sugar())
 	reqBody := dto.AddProductRequestDto{
 		Type:  "food",
 		PVZId: "pvz1",
@@ -107,7 +106,7 @@ func TestAddProductToReception_ErrPVZNotFound(t *testing.T) {
 	defer ctrl.Finish()
 
 	service := mocks.NewMockProductService(ctrl)
-	handler := handlers.NewProductHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewProductHandler(service, zaptest.NewLogger(t).Sugar())
 
 	reqBody := dto.AddProductRequestDto{
 		Type:  dto.ProductTypeClothes,
@@ -130,7 +129,7 @@ func TestAddProductToReception_ErrNoActiveReception(t *testing.T) {
 	defer ctrl.Finish()
 
 	service := mocks.NewMockProductService(ctrl)
-	handler := handlers.NewProductHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewProductHandler(service, zaptest.NewLogger(t).Sugar())
 
 	reqBody := dto.AddProductRequestDto{
 		Type:  dto.ProductTypeShoes,
@@ -153,7 +152,7 @@ func TestAddProductToReception_UnknownError(t *testing.T) {
 	defer ctrl.Finish()
 
 	service := mocks.NewMockProductService(ctrl)
-	handler := handlers.NewProductHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewProductHandler(service, zaptest.NewLogger(t).Sugar())
 
 	reqBody := dto.AddProductRequestDto{
 		Type:  dto.ProductTypeShoes,

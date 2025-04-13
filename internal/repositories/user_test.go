@@ -1,4 +1,4 @@
-package repositories_test
+package repositories
 
 import (
 	"database/sql"
@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/hamillka/avitoTechSpring25/internal/repositories"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +13,7 @@ import (
 func TestUserRepository_UserRegister_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewUserRepository(sqlxDB)
+	repo := NewUserRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, password_hash, role`)).
 		WithArgs("test@example.com", "hashedpass", "employee").
@@ -31,7 +30,7 @@ func TestUserRepository_UserRegister_Success(t *testing.T) {
 func TestUserRepository_UserRegister_Error(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewUserRepository(sqlxDB)
+	repo := NewUserRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, password_hash, role`)).
 		WithArgs("test@example.com", "pass", "employee").
@@ -44,7 +43,7 @@ func TestUserRepository_UserRegister_Error(t *testing.T) {
 func TestUserRepository_UserLogin_Success(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewUserRepository(sqlxDB)
+	repo := NewUserRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, email, password_hash, role FROM users WHERE email = $1`)).
 		WithArgs("login@example.com").
@@ -60,7 +59,7 @@ func TestUserRepository_UserLogin_Success(t *testing.T) {
 func TestUserRepository_UserLogin_NotFound(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewUserRepository(sqlxDB)
+	repo := NewUserRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, email, password_hash, role FROM users WHERE email = $1`)).
 		WithArgs("nouser@example.com").
@@ -73,7 +72,7 @@ func TestUserRepository_UserLogin_NotFound(t *testing.T) {
 func TestUserRepository_UserLogin_DBError(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	sqlxDB := sqlx.NewDb(db, "postgres")
-	repo := repositories.NewUserRepository(sqlxDB)
+	repo := NewUserRepository(sqlxDB)
 
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, email, password_hash, role FROM users WHERE email = $1`)).
 		WithArgs("user@example.com").

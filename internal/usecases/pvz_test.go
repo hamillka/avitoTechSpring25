@@ -1,4 +1,4 @@
-package usecases_test
+package usecases
 
 import (
 	"testing"
@@ -8,7 +8,6 @@ import (
 
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
-	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,7 +21,7 @@ func TestCreatePVZ_Success(t *testing.T) {
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 	prodRepo := mocks.NewMockProductRepository(ctrl)
 
-	service := usecases.NewPVZService(pvzRepo, recRepo, prodRepo)
+	service := NewPVZService(pvzRepo, recRepo, prodRepo)
 
 	pvzRepo.EXPECT().CreatePVZ("Москва").Return(models.PVZ{Id: "1", City: "Москва"}, nil)
 
@@ -39,7 +38,7 @@ func TestCloseLastReception_Success(t *testing.T) {
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 	prodRepo := mocks.NewMockProductRepository(ctrl)
 
-	service := usecases.NewPVZService(pvzRepo, recRepo, prodRepo)
+	service := NewPVZService(pvzRepo, recRepo, prodRepo)
 
 	pvzRepo.EXPECT().GetPVZById("pvz1").Return(models.PVZ{Id: "pvz1"}, nil)
 	recRepo.EXPECT().GetLastReception("pvz1").Return(models.Reception{Id: "rec1", Status: "in_progress"}, nil)
@@ -58,7 +57,7 @@ func TestDeleteLastProduct_Success(t *testing.T) {
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 	prodRepo := mocks.NewMockProductRepository(ctrl)
 
-	service := usecases.NewPVZService(pvzRepo, recRepo, prodRepo)
+	service := NewPVZService(pvzRepo, recRepo, prodRepo)
 
 	pvzRepo.EXPECT().GetPVZById("pvz1").Return(models.PVZ{Id: "pvz1"}, nil)
 	recRepo.EXPECT().GetLastReception("pvz1").Return(models.Reception{Id: "rec1", Status: "in_progress"}, nil)
@@ -77,7 +76,7 @@ func TestDeleteLastProduct_NoProducts(t *testing.T) {
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 	prodRepo := mocks.NewMockProductRepository(ctrl)
 
-	service := usecases.NewPVZService(pvzRepo, recRepo, prodRepo)
+	service := NewPVZService(pvzRepo, recRepo, prodRepo)
 
 	pvzRepo.EXPECT().GetPVZById("pvz1").Return(models.PVZ{Id: "pvz1"}, nil)
 	recRepo.EXPECT().GetLastReception("pvz1").Return(models.Reception{Id: "rec1", Status: "in_progress"}, nil)
@@ -127,7 +126,7 @@ func TestGetPVZWithPagination_EmptyDates(t *testing.T) {
 
 	mockProdRepo.EXPECT().GetProductsByReceptionIds([]string{"rec1"}, nil, nil).Return(products, nil)
 
-	service := usecases.NewPVZService(mockPVZRepo, mockRecRepo, mockProdRepo)
+	service := NewPVZService(mockPVZRepo, mockRecRepo, mockProdRepo)
 
 	result, err := service.GetPVZWithPagination(nil, nil, 1, 10)
 

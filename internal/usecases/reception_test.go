@@ -1,4 +1,4 @@
-package usecases_test
+package usecases
 
 import (
 	"errors"
@@ -8,7 +8,6 @@ import (
 
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/models"
-	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,7 +20,7 @@ func TestCreateReception_Success(t *testing.T) {
 	pvzRepo := mocks.NewMockPVZRepository(ctrl)
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 
-	service := usecases.NewReceptionService(pvzRepo, recRepo)
+	service := NewReceptionService(pvzRepo, recRepo)
 
 	pvzRepo.EXPECT().GetPVZById("pvz1").Return(models.PVZ{Id: "pvz1"}, nil)
 	recRepo.EXPECT().GetLastReception("pvz1").Return(models.Reception{Status: "close"}, nil)
@@ -41,7 +40,7 @@ func TestCreateReception_PVZNotFound(t *testing.T) {
 	pvzRepo := mocks.NewMockPVZRepository(ctrl)
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 
-	service := usecases.NewReceptionService(pvzRepo, recRepo)
+	service := NewReceptionService(pvzRepo, recRepo)
 
 	pvzRepo.EXPECT().GetPVZById("unknown").Return(models.PVZ{}, errors.New("not found"))
 
@@ -57,7 +56,7 @@ func TestCreateReception_AlreadyExists(t *testing.T) {
 	pvzRepo := mocks.NewMockPVZRepository(ctrl)
 	recRepo := mocks.NewMockReceptionRepository(ctrl)
 
-	service := usecases.NewReceptionService(pvzRepo, recRepo)
+	service := NewReceptionService(pvzRepo, recRepo)
 
 	pvzRepo.EXPECT().GetPVZById("pvz1").Return(models.PVZ{Id: "pvz1"}, nil)
 	recRepo.EXPECT().GetLastReception("pvz1").Return(models.Reception{Id: "rec1", Status: "in_progress"}, nil)

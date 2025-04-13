@@ -1,4 +1,4 @@
-package handlers_test
+package handlers
 
 import (
 	"bytes"
@@ -13,7 +13,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
-	"github.com/hamillka/avitoTechSpring25/internal/handlers"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/dto"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/middlewares"
 	"github.com/hamillka/avitoTechSpring25/internal/handlers/mocks"
@@ -28,7 +27,7 @@ func withRole(role string, r *http.Request) *http.Request {
 }
 
 func TestCreatePVZ_Forbidden(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/pvz", nil)
 	req = withRole("employee", req)
 	w := httptest.NewRecorder()
@@ -37,7 +36,7 @@ func TestCreatePVZ_Forbidden(t *testing.T) {
 }
 
 func TestCreatePVZ_InvalidJSON(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/pvz", bytes.NewBufferString("{bad json"))
 	req = withRole("moderator", req)
 	w := httptest.NewRecorder()
@@ -46,7 +45,7 @@ func TestCreatePVZ_InvalidJSON(t *testing.T) {
 }
 
 func TestCreatePVZ_InvalidCity(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	body := dto.CreatePVZRequestDto{City: "Berlin"}
 	data, _ := json.Marshal(body)
 	req := httptest.NewRequest(http.MethodPost, "/pvz", bytes.NewReader(data))
@@ -60,7 +59,7 @@ func TestCreatePVZ_ServiceError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockPVZService(ctrl)
-	handler := handlers.NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
 	service.EXPECT().CreatePVZ(dto.Moscow).Return(models.PVZ{}, errors.New("db error"))
 	body := dto.CreatePVZRequestDto{City: dto.Moscow}
 	data, _ := json.Marshal(body)
@@ -75,7 +74,7 @@ func TestCreatePVZ_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockPVZService(ctrl)
-	handler := handlers.NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
 	pvz := models.PVZ{Id: "123", City: dto.Kazan, RegistrationDate: time.Now().String()}
 	service.EXPECT().CreatePVZ(dto.Kazan).Return(pvz, nil)
 	body := dto.CreatePVZRequestDto{City: dto.Kazan}
@@ -88,7 +87,7 @@ func TestCreatePVZ_Success(t *testing.T) {
 }
 
 func TestGetPVZWithPagination_InvalidPage(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodGet, "/pvz?page=abc", nil)
 	w := httptest.NewRecorder()
 	handler.GetPVZWithPagination(w, req)
@@ -96,7 +95,7 @@ func TestGetPVZWithPagination_InvalidPage(t *testing.T) {
 }
 
 func TestGetPVZWithPagination_InvalidLimit(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodGet, "/pvz?limit=999", nil)
 	w := httptest.NewRecorder()
 	handler.GetPVZWithPagination(w, req)
@@ -104,7 +103,7 @@ func TestGetPVZWithPagination_InvalidLimit(t *testing.T) {
 }
 
 func TestGetPVZWithPagination_InvalidDates(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodGet, "/pvz?startDate=wrong", nil)
 	w := httptest.NewRecorder()
 	handler.GetPVZWithPagination(w, req)
@@ -115,7 +114,7 @@ func TestGetPVZWithPagination_ServiceError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockPVZService(ctrl)
-	handler := handlers.NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
 	service.EXPECT().GetPVZWithPagination(nil, nil, 1, 10).Return(nil, errors.New("fail"))
 	req := httptest.NewRequest(http.MethodGet, "/pvz", nil)
 	w := httptest.NewRecorder()
@@ -127,7 +126,7 @@ func TestGetPVZWithPagination_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockPVZService(ctrl)
-	handler := handlers.NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
 	service.EXPECT().GetPVZWithPagination(nil, nil, 1, 10).Return([]models.PVZWithReceptions{}, nil)
 	req := httptest.NewRequest(http.MethodGet, "/pvz", nil)
 	w := httptest.NewRecorder()
@@ -136,7 +135,7 @@ func TestGetPVZWithPagination_Success(t *testing.T) {
 }
 
 func TestCloseLastReception_Forbidden(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/pvz/pvz1/close_last_reception", nil)
 	req = withRole("moderator", req)
 	req = mux.SetURLVars(req, map[string]string{"pvzId": "pvz1"})
@@ -146,7 +145,7 @@ func TestCloseLastReception_Forbidden(t *testing.T) {
 }
 
 func TestCloseLastReception_BadRequest_NoPVZId(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/pvz/close_last_reception", nil)
 	req = withRole(dto.RoleEmployee, req)
 	w := httptest.NewRecorder()
@@ -158,7 +157,7 @@ func TestCloseLastReception_ErrNoActiveReception(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockPVZService(ctrl)
-	handler := handlers.NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
 
 	service.EXPECT().CloseLastReception("pvz1").Return(models.Reception{}, dto.ErrNoActiveReception)
 
@@ -175,7 +174,7 @@ func TestCloseLastReception_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	service := mocks.NewMockPVZService(ctrl)
-	handler := handlers.NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
 
 	rec := models.Reception{Id: "rec1", PVZId: "pvz1", Status: "close", DateTime: time.Now().String()}
 	service.EXPECT().CloseLastReception("pvz1").Return(rec, nil)
@@ -190,7 +189,7 @@ func TestCloseLastReception_Success(t *testing.T) {
 }
 
 func TestDeleteLastProduct_Forbidden(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/pvz/pvz1/delete_last_product", nil)
 	req = withRole("moderator", req)
 	req = mux.SetURLVars(req, map[string]string{"pvzId": "pvz1"})
@@ -200,7 +199,7 @@ func TestDeleteLastProduct_Forbidden(t *testing.T) {
 }
 
 func TestDeleteLastProduct_BadRequest_NoPVZId(t *testing.T) {
-	handler := handlers.NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(nil, zaptest.NewLogger(t).Sugar())
 	req := httptest.NewRequest(http.MethodPost, "/pvz/delete_last_product", nil)
 	req = withRole(dto.RoleEmployee, req)
 	w := httptest.NewRecorder()
@@ -213,7 +212,7 @@ func TestDeleteLastProduct_ErrNoProducts(t *testing.T) {
 	defer ctrl.Finish()
 
 	service := mocks.NewMockPVZService(ctrl)
-	handler := handlers.NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
 
 	service.EXPECT().DeleteLastProduct("pvz1").Return(dto.ErrNoProductsInReception)
 
@@ -231,7 +230,7 @@ func TestDeleteLastProduct_Success(t *testing.T) {
 	defer ctrl.Finish()
 
 	service := mocks.NewMockPVZService(ctrl)
-	handler := handlers.NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
+	handler := NewPVZHandler(service, zaptest.NewLogger(t).Sugar())
 
 	service.EXPECT().DeleteLastProduct("pvz1").Return(nil)
 
