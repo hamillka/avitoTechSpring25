@@ -17,7 +17,7 @@ services:
       test: [ "CMD-SHELL", "sh -c 'pg_isready -U postgres -d pvz_service'" ]
       interval: 5s
       timeout: 10s
-      retries: 5
+      retries: 10
       start_period: 10s
 
   pvz-service:
