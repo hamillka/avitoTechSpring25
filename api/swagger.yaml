@@ -1,0 +1,555 @@
+definitions:
+  dto.AddProductRequestDto:
+    description: Информация запроса о товаре при его добавлении
+    properties:
+      pvzId:
+        description: Идентификатор ПВЗ, на который добавляется товар
+        type: string
+      type:
+        description: Тип товара
+        type: string
+    type: object
+  dto.AddProductResponseDto:
+    description: Информация о товаре при его добавлении
+    properties:
+      dateTime:
+        description: Дата и время
+        type: string
+      id:
+        description: Идентификатор
+        type: string
+      receptionId:
+        description: Идентификатор приемки
+        type: string
+      type:
+        description: Тип товара
+        type: string
+    type: object
+  dto.CloseReceptionResponseDto:
+    description: Информация о приемке при ее закрытии
+    properties:
+      dateTime:
+        description: Дата и время приемки
+        type: string
+      id:
+        description: Идентификатор приемки
+        type: string
+      pvzId:
+        description: Идентификатор ПВЗ
+        type: string
+      status:
+        description: Статус приемки
+        type: string
+    type: object
+  dto.CreatePVZRequestDto:
+    description: Информация о ПВЗ при его создании
+    properties:
+      city:
+        description: Город
+        type: string
+    type: object
+  dto.CreatePVZResponseDto:
+    description: Информация о ПВЗ при его создании
+    properties:
+      city:
+        description: Город
+        type: string
+      id:
+        description: Идентификатор
+        type: string
+      registrationDate:
+        description: Дата регистрации
+        type: string
+    type: object
+  dto.CreateReceptionRequestDto:
+    description: Информация о приемке при ее создании
+    properties:
+      pvzId:
+        description: Идентификатор ПВЗ
+        type: string
+    type: object
+  dto.CreateReceptionResponseDto:
+    description: Информация о приемке при ее создании
+    properties:
+      dateTime:
+        description: Дата и время приемки
+        type: string
+      id:
+        description: Идентификатор приемки
+        type: string
+      pvzId:
+        description: Идентификатор ПВЗ
+        type: string
+      status:
+        description: Статус приемки
+        type: string
+    type: object
+  dto.DummyLoginRequestDto:
+    description: Информация о пользователе при упрощенном входе
+    properties:
+      role:
+        description: Желаемая роль (employee || moderator)
+        type: string
+    type: object
+  dto.ErrorDto:
+    description: Информация об ошибке (DTO)
+    properties:
+      message:
+        description: Текст ошибки
+        type: string
+    type: object
+  dto.PVZDto:
+    description: Информация о ПВЗ
+    properties:
+      city:
+        description: Город
+        type: string
+      id:
+        description: Идентификатор
+        type: string
+      registrationDate:
+        description: Дата регистрации
+        type: string
+    type: object
+  dto.PVZWithReceptionsDto:
+    description: Информация о ПВЗ и приемках, связанных с ним
+    properties:
+      pvz:
+        allOf:
+        - $ref: '#/definitions/dto.PVZDto'
+        description: Информация о ПВЗ
+      receptions:
+        description: Информация о всех приемках на ПВЗ
+        items:
+          $ref: '#/definitions/dto.ReceptionWithProductsDto'
+        type: array
+    type: object
+  dto.ProductDto:
+    description: Информация о товаре
+    properties:
+      dateTime:
+        description: Дата и время
+        type: string
+      id:
+        description: Идентификатор
+        type: string
+      receptionId:
+        description: Идентификатор приемки
+        type: string
+      type:
+        description: Тип товара
+        type: string
+    type: object
+  dto.ReceptionDto:
+    description: Информация о приемке
+    properties:
+      dateTime:
+        description: Дата и время создания приемки
+        type: string
+      id:
+        description: Идентификатор приемки
+        type: string
+      pvzId:
+        description: Идентификатор ПВЗ
+        type: string
+      status:
+        description: Статус приемки
+        type: string
+    type: object
+  dto.ReceptionWithProductsDto:
+    description: Информация о приемке и товарах в ней
+    properties:
+      products:
+        description: Информация о всех товарах в приемке
+        items:
+          $ref: '#/definitions/dto.ProductDto'
+        type: array
+      reception:
+        allOf:
+        - $ref: '#/definitions/dto.ReceptionDto'
+        description: Информация о приемке
+    type: object
+  dto.UserLoginRequestDto:
+    description: Информация о пользователе при входе в систему
+    properties:
+      email:
+        description: Почта
+        type: string
+      password:
+        description: Пароль
+        type: string
+    type: object
+  dto.UserLoginResponseDto:
+    description: Информация о пользователе при входе в систему
+    properties:
+      token:
+        description: JWT токен
+        type: string
+    type: object
+  dto.UserRegisterRequestDto:
+    description: Информация о пользователе при регистрации
+    properties:
+      email:
+        description: Почта
+        type: string
+      password:
+        description: Пароль
+        type: string
+      role:
+        description: Роль пользователя (employee || moderator)
+        type: string
+    type: object
+  dto.UserRegisterResponseDto:
+    description: Информация о пользователе при регистрации
+    properties:
+      email:
+        description: Почта
+        type: string
+      id:
+        description: Идентификатор
+        type: string
+      role:
+        description: Роль пользователя (employee || moderator)
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Avito PVZ Service 2025
+  title: PVZ Service
+  version: "1.0"
+paths:
+  /dummyLogin:
+    post:
+      consumes:
+      - application/json
+      description: Создает JWT токен с указанной ролью без проверки учетных данных
+        (для тестирования)
+      operationId: user-dummy-login
+      parameters:
+      - description: Роль для токена
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DummyLoginRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная авторизация
+          schema:
+            $ref: '#/definitions/dto.UserLoginResponseDto'
+        "400":
+          description: Некорректные данные / Неверный запрос
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      summary: Упрощенная авторизация
+      tags:
+      - users
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Авторизует пользователя по email и паролю и возвращает JWT токен
+      operationId: user-login
+      parameters:
+      - description: Данные для авторизации
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLoginRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная авторизация
+          schema:
+            $ref: '#/definitions/dto.UserLoginResponseDto'
+        "400":
+          description: Некорректные данные
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "401":
+          description: Неверные учетные данные
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      summary: Авторизация пользователя
+      tags:
+      - users
+  /products:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новый товар в активную приемку для указанного ПВЗ
+      operationId: add-product-to-reception
+      parameters:
+      - description: Информация о товаре
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddProductRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Товар успешно добавлен
+          schema:
+            $ref: '#/definitions/dto.AddProductResponseDto'
+        "400":
+          description: Некорректные данные / ПВЗ не найден / Нет активной приемки
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      security:
+      - ApiKeyAuth: []
+      summary: Добавить товар в приемку
+      tags:
+      - products
+  /pvz:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список ПВЗ с их приемками и товарами с возможностью
+        фильтрации по дате и пагинацией
+      operationId: get-pvz-with-pagination
+      parameters:
+      - description: Начальная дата (RFC3339)
+        in: query
+        name: startDate
+        type: string
+      - description: Конечная дата (RFC3339)
+        in: query
+        name: endDate
+        type: string
+      - description: Номер страницы (по умолчанию 1)
+        in: query
+        name: page
+        type: integer
+      - description: Количество элементов на странице (по умолчанию 10, максимум 30)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список ПВЗ с приемками и товарами
+          schema:
+            items:
+              $ref: '#/definitions/dto.PVZWithReceptionsDto'
+            type: array
+        "400":
+          description: Невалидные параметры запроса
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список ПВЗ с пагинацией
+      tags:
+      - pvz
+    post:
+      consumes:
+      - application/json
+      description: Создает новый пункт выдачи заказов в указанном городе
+      operationId: create-pvz
+      parameters:
+      - description: Информация о создаваемом ПВЗ
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePVZRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ПВЗ успешно создан
+          schema:
+            $ref: '#/definitions/dto.CreatePVZResponseDto'
+        "400":
+          description: Некорректные данные / Неверный запрос
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      security:
+      - ApiKeyAuth: []
+      summary: Завести ПВЗ
+      tags:
+      - pvz
+  /pvz/{pvzId}/close_last_reception:
+    post:
+      consumes:
+      - application/json
+      description: Закрывает последнюю активную приемку для указанного ПВЗ
+      operationId: close-last-reception
+      parameters:
+      - description: Идентификатор ПВЗ
+        in: path
+        name: pvzId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Приемка успешно закрыта
+          schema:
+            $ref: '#/definitions/dto.CloseReceptionResponseDto'
+        "400":
+          description: Некорректные данные / ПВЗ не найден / Приемка уже закрыта
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      security:
+      - ApiKeyAuth: []
+      summary: Закрыть последнюю приемку
+      tags:
+      - pvz
+  /pvz/{pvzId}/delete_last_product:
+    post:
+      consumes:
+      - application/json
+      description: Удаляет последний добавленный товар из последней активной приемки
+        для указанного ПВЗ
+      operationId: delete-last-product
+      parameters:
+      - description: Идентификатор ПВЗ
+        in: path
+        name: pvzId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Товар успешно удален
+        "400":
+          description: Некорректные данные / ПВЗ не найден / Нет активной приемки
+            / Нет товаров для удаления
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      security:
+      - ApiKeyAuth: []
+      summary: Удалить последний товар
+      tags:
+      - pvz
+  /receptions:
+    post:
+      consumes:
+      - application/json
+      description: Создает новую приемку товаров для указанного ПВЗ
+      operationId: create-reception
+      parameters:
+      - description: Информация о создаваемой приемке
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateReceptionRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Приемка успешно создана
+          schema:
+            $ref: '#/definitions/dto.CreateReceptionResponseDto'
+        "400":
+          description: Некорректные данные / ПВЗ не найден / ПВЗ уже имеет незакрытую
+            приемку
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      security:
+      - ApiKeyAuth: []
+      summary: Создать приемку
+      tags:
+      - receptions
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Регистрирует нового пользователя с указанными email, паролем и
+        ролью
+      operationId: user-register
+      parameters:
+      - description: Данные для регистрации
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRegisterRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Пользователь успешно зарегистрирован
+          schema:
+            $ref: '#/definitions/dto.UserRegisterResponseDto'
+        "400":
+          description: Некорректные данные / Неверный запрос
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      summary: Регистрация пользователя
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    description: Authorization check
+    in: header
+    name: auth-x
+    type: apiKey
+swagger: "2.0"

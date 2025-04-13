@@ -1,0 +1,10 @@
+apiVersion: 1
+
+providers:
+  - name: 'pvz_dashboards'
+    folder: 'PVZ'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

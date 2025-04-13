@@ -1,0 +1,156 @@
+# Options for analysis running.
+run:
+  issues-exit-code: 1
+
+  tests: false
+
+  issues.exclude-dirs-use-default: false
+
+output:
+  formats: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters-settings:
+  errorlint:
+    errorf: true
+
+  exhaustive:
+    check-generated: false
+    default-signifies-exhaustive: false
+
+  gci:
+    sections:
+      - standard           
+      - default           
+      - prefix(git.mts.ai) 
+    skip-generated: true
+
+  gocritic:
+    disabled-checks:
+      - whyNoLint 
+      - importShadow
+      - sloppyReassign
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    settings:
+      captLocal:
+        paramsOnly: false
+      elseif:
+        skipBalanced: false
+      hugeParam:
+        sizeThreshold: 70
+      nestingReduce:
+        bodyWidth: 4
+      rangeExprCopy:
+        sizeThreshold: 516
+        skipTestFuncs: false
+      rangeValCopy:
+        sizeThreshold: 32
+        skipTestFuncs: false
+      ruleguard:
+        debug: 'emptyDecl'
+        failOnError: false
+        failOn: dsl
+      tooManyResultsChecker:
+        maxResults: 10
+      truncateCmp:
+        skipArchDependent: false
+      underef:
+        skipRecvDeref: false
+      unnamedResult:
+        checkExported: true
+
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+    ignore-tests: true
+
+  gofmt:
+    simplify: true
+
+  gofumpt:
+    extra-rules: true
+
+  golint:
+    min-confidence: 0.8
+
+  govet:
+    shadow: true
+    enable:
+      - fieldalignment
+
+  misspell:
+    locale: US
+
+  nolintlint:
+    require-explanation: true
+    require-specific: true
+
+  unparam:
+    check-exported: false
+
+linters:
+  enable-all: true
+  disable:
+    - thelper
+    - contextcheck
+    - perfsprint
+    - depguard
+    - dupl
+    - stylecheck
+    - revive
+    - canonicalheader
+    - exhaustruct
+    - dupword
+    - forcetypeassert
+    - gomoddirectives
+    - err113
+    - maintidx
+    - errchkjson
+    - mnd
+    - nlreturn
+    - intrange
+    - nonamedreturns
+    - paralleltest
+    - sloglint
+    - testableexamples
+    - varnamelen
+    - gocritic
+    - gochecknoglobals
+    - wrapcheck
+    - wsl
+    - zerologlint
+    - gci
+    - ireturn
+    - tagliatelle
+    - testpackage
+    - govet
+    - funlen
+    - gocognit
+    - lll
+    - ineffassign
+    - gosec
+    - nestif
+    - cyclop
+    - staticcheck
+    - wastedassign
+    - rowserrcheck
+    - sqlclosecheck
+    - noctx
+    - godot
+
+issues:
+  exclude-use-default: true
+  max-same-issues: 0
+  new: false
+
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - unused
+        - unparam

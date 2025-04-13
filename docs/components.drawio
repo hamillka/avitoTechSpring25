@@ -1,0 +1,67 @@
+<mxfile host="Electron" modified="2025-04-13T10:47:26.635Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="1r72HHvIOor50sVfrUTr" version="21.6.8" type="device">
+  <diagram name="Страница — 1" id="2zSKAXVJgCGpiuHGIqeq">
+    <mxGraphModel dx="1941" dy="595" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=10;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="2_tLbDyZjP3ROXE5uJ6R-2" target="2_tLbDyZjP3ROXE5uJ6R-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-2" value="Handlers" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="220" width="190" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-3" value="Business&lt;br&gt;Logic" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="220" width="190" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=10;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="2_tLbDyZjP3ROXE5uJ6R-6" target="2_tLbDyZjP3ROXE5uJ6R-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=10;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="2_tLbDyZjP3ROXE5uJ6R-6" target="2_tLbDyZjP3ROXE5uJ6R-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-6" value="Data&lt;br&gt;Access" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="220" width="190" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-7" value="DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="-50" y="255" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-14" value="Product Service" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="290" y="270" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-16" value="PVZ Service" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="379" y="270" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-21" value="Product Repository" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="70" y="270" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-23" value="PVZ Repository" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="159" y="270" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-28" value="Product Handler" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="510" y="270" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-30" value="PVZ Handler" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="599" y="270" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-31" value="Reception Handler" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="510" y="320" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-32" value="User Handler" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="599" y="320" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-33" value="Reception Repository" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="70" y="320" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-34" value="User Repository" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="159" y="320" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-35" value="Reception Service" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="290" y="320" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2_tLbDyZjP3ROXE5uJ6R-36" value="User Service" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="379" y="320" width="70" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,55 @@
+❯ k6 run tests/load/load.js
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+     execution: local
+        script: tests/load/load.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 2000 max VUs, 1m0s max duration (incl. graceful stop):
+              * constant_rps: 1000.00 iterations/s for 30s (maxVUs: 1000-2000, gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✓ 'p(99.99)<100' p(99.99)=79.54ms
+
+    http_req_failed
+    ✓ 'rate<0.0001' rate=0.00%
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......................: 30001   999.953204/s
+    checks_succeeded...................: 100.00% 30001 out of 30001
+    checks_failed......................: 0.00%   0 out of 30001
+
+    ✓ status is 200
+
+    HTTP
+    http_req_duration.......................................................: med=770µs    p(95)=2.56ms p(99)=9.24ms p(99.99)=79.54ms
+      { expected_response:true }............................................: med=770µs    p(95)=2.56ms p(99)=9.24ms p(99.99)=79.54ms
+    http_req_failed.........................................................: 0.00%  0 out of 30001
+    http_reqs...............................................................: 30001  999.953204/s
+
+    EXECUTION
+    iteration_duration......................................................: med=862.16µs p(95)=2.75ms p(99)=9.4ms  p(99.99)=79.79ms
+    iterations..............................................................: 30001  999.953204/s
+    vus.....................................................................: 1      min=0          max=3
+    vus_max.................................................................: 1000   min=1000       max=1000
+
+    NETWORK
+    data_received...........................................................: 501 MB 17 MB/s
+    data_sent...............................................................: 7.0 MB 234 kB/s
+
+
+
+
+running (0m30.0s), 0000/1000 VUs, 30001 complete and 0 interrupted iterations
+constant_rps ✓ [======================================] 0000/1000 VUs  30s  1000.00 iters/s

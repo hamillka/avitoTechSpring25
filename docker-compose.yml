@@ -1,0 +1,76 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: postgres
+    volumes:
+      - ./sql-scripts/1-init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./sql-scripts/1-init-test.sql:/docker-entrypoint-initdb.d/1-init-test.sql
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U postgres -d pvz_service'" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+  pvz-service:
+    container_name: pvz-service
+    build:
+      context: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - postgres
+    restart: on-failure
+    env_file:
+      - configs/cfg.env
+
+  grpc-service:
+    container_name: grpc-service
+    build:
+      context: ./
+      dockerfile: Dockerfile.grpc
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - postgres
+    restart: on-failure
+    env_file:
+      - configs/cfg.env
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3030:3030"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_HTTP_PORT=3030
+    volumes:
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana-storage:/var/lib/grafana
+volumes:
+  db-data:
+  grafana-storage:
