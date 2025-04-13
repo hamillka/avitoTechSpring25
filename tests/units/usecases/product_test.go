@@ -10,6 +10,7 @@ import (
 	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAddProductToReception_Success(t *testing.T) {
@@ -28,7 +29,7 @@ func TestAddProductToReception_Success(t *testing.T) {
 
 	product, err := service.AddProductToReception("type1", "pvz123")
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "prod1", product.Id)
 }
 

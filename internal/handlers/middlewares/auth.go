@@ -39,7 +39,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			}
 			return Secret, nil
 		})
-
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			errorDto := &dto.ErrorDto{

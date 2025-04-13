@@ -140,7 +140,7 @@ func (pvzs *PVZService) CloseLastReception(pvzId string) (models.Reception, erro
 	}
 
 	lastReception, err := pvzs.recRepo.GetLastReception(pvzId)
-	if err != nil || lastReception.Status == "close" {
+	if err != nil || lastReception.Status == models.CLOSE {
 		return models.Reception{}, dto.ErrNoActiveReception
 	}
 

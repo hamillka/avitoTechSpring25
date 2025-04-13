@@ -11,3 +11,8 @@ type ReceptionWithProducts struct {
 	Reception Reception
 	Products  []Product
 }
+
+const (
+	CLOSE      = "close"
+	INPROGRESS = "in_progress"
+)

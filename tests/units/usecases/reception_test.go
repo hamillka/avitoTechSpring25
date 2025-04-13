@@ -11,6 +11,7 @@ import (
 	"github.com/hamillka/avitoTechSpring25/internal/usecases"
 	"github.com/hamillka/avitoTechSpring25/internal/usecases/mocks"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCreateReception_Success(t *testing.T) {
@@ -28,7 +29,7 @@ func TestCreateReception_Success(t *testing.T) {
 
 	reception, err := service.CreateReception("pvz1")
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "rec1", reception.Id)
 	assert.Equal(t, "in_progress", reception.Status)
 }
