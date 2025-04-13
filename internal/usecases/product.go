@@ -30,13 +30,6 @@ func NewProductService(prodRepo ProductRepository, recRepo ReceptionRepository, 
 }
 
 func (ps *ProductService) AddProductToReception(productType, pvzId string) (models.Product, error) {
-	/*
-		Проверяю, что pvzId существует
-		Если нет, то ошибка
-		Хочу получить последнюю приемку для pvzId
-		Если она не открыта или ее не существует, то ошибка
-		Если она открыта, то добавляю продукт в нее
-	*/
 	_, err := ps.pvzRepo.GetPVZById(pvzId)
 	if err != nil {
 		return models.Product{}, err

@@ -31,10 +31,6 @@ func NewPVZService(pvzRepo PVZRepository, recRepo ReceptionRepository, prodRepo 
 }
 
 func (pvzs *PVZService) CreatePVZ(city string) (models.PVZ, error) {
-	/*
-		создать пвз
-		вернуть пвз
-	*/
 	pvz, err := pvzs.pvzRepo.CreatePVZ(city)
 	if err != nil {
 		return models.PVZ{}, err
@@ -44,13 +40,6 @@ func (pvzs *PVZService) CreatePVZ(city string) (models.PVZ, error) {
 }
 
 func (pvzs *PVZService) GetPVZWithPagination(startDate, endDate *time.Time, page, limit int) ([]models.PVZWithReceptions, error) {
-	/*
-		Достать все ПВЗ
-		Достать все приемки для этих ПВЗ одним запросом
-		Достать все продукты для этих приемок одним запросом
-		Сгруппировать все по пвз
-		Вернуть все ПВЗ с приемками и продуктами
-	*/
 	offset := (page - 1) * limit
 
 	allPVZs, err := pvzs.pvzRepo.GetPVZsWithPagination(offset, limit)
@@ -128,12 +117,6 @@ func (pvzs *PVZService) GetPVZWithPagination(startDate, endDate *time.Time, page
 }
 
 func (pvzs *PVZService) CloseLastReception(pvzId string) (models.Reception, error) {
-	/*
-		Проверить существует ли пвз. Если нет, то ErrPVZNotFound
-		Проверить существует ли приемка у пвз. Если нет, то ErrNoActiveReception
-		Закрыть приемку
-		Вернуть приемку
-	*/
 	_, err := pvzs.pvzRepo.GetPVZById(pvzId)
 	if err != nil {
 		return models.Reception{}, err
@@ -153,13 +136,6 @@ func (pvzs *PVZService) CloseLastReception(pvzId string) (models.Reception, erro
 }
 
 func (pvzs *PVZService) DeleteLastProduct(pvzId string) error {
-	/*
-		Проверить существует ли пвз. Если нет, то ErrPVZNotFound
-		Проверить существует ли приемка у пвз и открыта ли она. Если нет, то ErrNoActiveReception
-		Проверить существуют ли продукты у приемки. Если нет, то ErrNoProductsInReception
-		Удалить продукт из приемки
-	*/
-
 	_, err := pvzs.pvzRepo.GetPVZById(pvzId)
 	if err != nil {
 		return err

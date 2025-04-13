@@ -28,13 +28,6 @@ func NewReceptionService(pvzRepo PVZRepository, recRepo ReceptionRepository) *Re
 }
 
 func (rs *ReceptionService) CreateReception(pvzId string) (models.Reception, error) {
-	/*
-		Проверить существует ли такой ПВЗ
-		Проверить есть ли активная приемка у этого ПВЗ
-		Если есть, то вернуть ошибку
-		Если нет, то создать приемку
-	*/
-
 	_, err := rs.pvzRepo.GetPVZById(pvzId)
 	if err != nil {
 		return models.Reception{}, err

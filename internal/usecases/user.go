@@ -23,11 +23,6 @@ func NewUserService(userRepo UserRepository) *UserService {
 }
 
 func (us *UserService) UserRegister(email, password, role string) (models.User, error) {
-	/*
-		Проверка на существование пользователя с таким email
-		Если пользователь с таким email уже существует, то возвращаем ошибку
-		Если пользователя с таким email нет, то создаем нового пользователя
-	*/
 	existingUser, err := us.userRepo.UserLogin(email, password)
 	if err == nil && existingUser.Id != "" {
 		return models.User{}, dto.ErrUserAlreadyExists
@@ -47,13 +42,6 @@ func (us *UserService) UserRegister(email, password, role string) (models.User, 
 }
 
 func (us *UserService) UserLogin(email, password string) (models.User, error) {
-	/*
-		Проверка на существование пользователя с таким email
-		Если пользователь с таким email не существует, то возвращаем ошибку
-		Если пользователь с таким email существует, то проверяем пароль (хэш)
-		Если пароль не совпадает, то возвращаем ошибку
-		Если пароль совпадает, то возвращаем пользователя
-	*/
 	user, err := us.userRepo.UserLogin(email, password)
 	if err != nil {
 		return models.User{}, err
