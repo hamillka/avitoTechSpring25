@@ -25,7 +25,7 @@ import (
 
 func setupTestEnvironment(t *testing.T) (http.Handler, func()) {
 	dbConfig := &db.DatabaseConfig{
-		DBHost: os.Getenv("DB_HOST"),
+		DBHost: "localhost",
 		DBPort: "5432",
 		DBName: "pvz_service_test",
 		DBUser: "postgres",
